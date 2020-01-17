@@ -8,9 +8,4 @@
     android:orientation="vertical"
     tools:context=".Activities.MainActivity">
 
-    <Button
-        android:id="@+id/bCategorias"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:text="Ver categorias" />
 </LinearLayout>
