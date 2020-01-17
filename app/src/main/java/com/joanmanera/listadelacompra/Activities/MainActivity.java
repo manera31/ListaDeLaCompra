@@ -36,6 +36,7 @@ public class MainActivity extends AppCompatActivity {
                 Intent i = new Intent(MainActivity.this, ListCategoryActivity.class);
                 i.putExtra(ListCategoryActivity.EXTRA_LIST_CATEGORY, categories);
                 startActivity(i);
+
             }
         });
     }

@@ -5,7 +5,6 @@ import android.os.Bundle;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 
-import com.joanmanera.listadelacompra.Fragments.FragmentCategoryList;
 import com.joanmanera.listadelacompra.Fragments.FragmentProductList;
 import com.joanmanera.listadelacompra.Models.Product;
 import com.joanmanera.listadelacompra.R;
@@ -19,8 +18,8 @@ public class ListProductActivity extends AppCompatActivity{
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_list);
-        FragmentProductList fragmentProductList = (FragmentProductList) getSupportFragmentManager().findFragmentById(R.id.fList);
+        setContentView(R.layout.activity_product_list);
+        FragmentProductList fragmentProductList = (FragmentProductList) getSupportFragmentManager().findFragmentById(R.id.fProductList);
         products = (ArrayList<Product>)getIntent().getSerializableExtra(EXTRA_LIST_PRODUCT);
         fragmentProductList.show(products);
     }

@@ -21,8 +21,8 @@ public class ListCategoryActivity extends AppCompatActivity implements ICategory
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_list);
-        FragmentCategoryList fragmentCategoryList = (FragmentCategoryList)getSupportFragmentManager().findFragmentById(R.id.fList);
+        setContentView(R.layout.activity_category_list);
+        FragmentCategoryList fragmentCategoryList = (FragmentCategoryList)getSupportFragmentManager().findFragmentById(R.id.fCategoryList);
         fragmentCategoryList.setCategoryListListener(this);
         categories = (ArrayList<Category>)getIntent().getSerializableExtra(EXTRA_LIST_CATEGORY);
         fragmentCategoryList.show(categories);

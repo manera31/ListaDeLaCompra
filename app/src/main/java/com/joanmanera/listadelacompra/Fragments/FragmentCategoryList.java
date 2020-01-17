@@ -56,15 +56,9 @@ public class FragmentCategoryList extends Fragment {
         });
 
         rvList = view.findViewById(R.id.rvList);
-        adapterCategoryList = new AdapterCategoryList(categories, getActivity());
-        adapterCategoryList.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                listener.onCategoryListSelected(categories.get(rvList.getChildAdapterPosition(view)).getProducts());
-            }
-        });
-        rvList.setAdapter(adapterCategoryList);
-        rvList.setLayoutManager(new GridLayoutManager(getActivity(), SPAN_COUNT));
+        //adapterCategoryList = new AdapterCategoryList(categories, getActivity(), listener);
+        //rvList.setAdapter(adapterCategoryList);
+        //rvList.setLayoutManager(new GridLayoutManager(getActivity(), SPAN_COUNT));
 
         return view;
     }
@@ -94,5 +88,8 @@ public class FragmentCategoryList extends Fragment {
 
     public void setCategoryListListener(ICategoryListListener listener){
         this.listener = listener;
+        adapterCategoryList = new AdapterCategoryList(categories, getActivity(), listener);
+        rvList.setAdapter(adapterCategoryList);
+        rvList.setLayoutManager(new GridLayoutManager(getActivity(), SPAN_COUNT));
     }
 }

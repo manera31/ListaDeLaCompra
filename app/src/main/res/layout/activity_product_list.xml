@@ -4,8 +4,8 @@
     android:layout_height="match_parent">
 
     <fragment
-        android:id="@+id/fList"
-        android:name="com.joanmanera.listadelacompra.Fragments.FragmentCategoryList"
+        android:id="@+id/fProductList"
+        android:name="com.joanmanera.listadelacompra.Fragments.FragmentProductList"
         android:layout_width="match_parent"
         android:layout_height="match_parent" />
 </LinearLayout>
