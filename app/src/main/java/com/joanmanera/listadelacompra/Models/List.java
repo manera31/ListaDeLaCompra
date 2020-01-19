@@ -9,9 +9,9 @@ public class List implements Serializable {
     private GregorianCalendar date;
     private ArrayList<Product> products;
 
-    public List(String name, GregorianCalendar date, ArrayList<Product> products) {
+    public List(String name, ArrayList<Product> products) {
         this.name = name;
-        this.date = date;
+        this.date = new GregorianCalendar();
         this.products = products;
     }
 

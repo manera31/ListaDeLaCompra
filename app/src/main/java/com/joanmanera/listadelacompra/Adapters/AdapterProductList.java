@@ -10,7 +10,9 @@ import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.joanmanera.listadelacompra.Models.Category;
+import com.bumptech.glide.Glide;
+import com.joanmanera.listadelacompra.Activities.ListProductActivity;
+import com.joanmanera.listadelacompra.Interfaces.IProductListListener;
 import com.joanmanera.listadelacompra.Models.Product;
 import com.joanmanera.listadelacompra.R;
 
@@ -19,18 +21,20 @@ import java.util.ArrayList;
 public class AdapterProductList extends RecyclerView.Adapter<AdapterProductList.ProductViewHolder> {
 
     private ArrayList<Product> products;
+    private IProductListListener listener;
     private Context context;
 
-    public AdapterProductList(ArrayList<Product> products, Context context){
+    public AdapterProductList(ArrayList<Product> products, IProductListListener listener, Context context){
         this.products = products;
+        this.listener = listener;
         this.context = context;
     }
 
     @NonNull
     @Override
     public ProductViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-        final View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.item_list, parent, false);
-        return new ProductViewHolder(view);
+        final View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.item_category_product_list, parent, false);
+        return new ProductViewHolder(view, listener, context);
     }
 
     @Override
@@ -48,21 +52,32 @@ public class AdapterProductList extends RecyclerView.Adapter<AdapterProductList.
         notifyDataSetChanged();
     }
 
-    public class ProductViewHolder extends RecyclerView.ViewHolder{
+    public class ProductViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
 
         private ImageView ivImage;
         private TextView tvName;
+        private IProductListListener listener;
+        private Context context;
 
-        public ProductViewHolder(View view){
+        public ProductViewHolder(View view, IProductListListener listener, Context context){
             super(view);
+            this.listener = listener;
+            this.context = context;
+            view.setOnClickListener(this);
             ivImage = view.findViewById(R.id.ivImage);
             tvName = view.findViewById(R.id.tvName);
         }
 
         public void bindCategory(int position){
             Product product = products.get(position);
-            //ivImage.setImageResource(product.getImage());
+            ivImage.setImageResource(product.getImage());
             tvName.setText(product.getName());
+        }
+
+        @Override
+        public void onClick(View v) {
+            //Glide.with(context).load(R.drawable.baseline_done_24).into(ivImage);
+            listener.onProductListSelected(products.get(getAdapterPosition()));
         }
     }
 }

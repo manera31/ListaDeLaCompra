@@ -26,6 +26,8 @@ public class ListCategoryActivity extends AppCompatActivity implements ICategory
         fragmentCategoryList.setCategoryListListener(this);
         categories = (ArrayList<Category>)getIntent().getSerializableExtra(EXTRA_LIST_CATEGORY);
         fragmentCategoryList.show(categories);
+        setTitle("Categorías");
+
     }
 
     @Override

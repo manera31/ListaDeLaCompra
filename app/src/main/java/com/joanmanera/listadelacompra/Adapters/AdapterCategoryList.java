@@ -19,20 +19,18 @@ import java.util.ArrayList;
 public class AdapterCategoryList extends RecyclerView.Adapter<AdapterCategoryList.CategoryListViewHolder> {
 
     private ArrayList<Category> categories;
-    private Context context;
     private ICategoryListListener listener;
 
-    public AdapterCategoryList(ArrayList<Category> categories, Context context, ICategoryListListener listener){
+    public AdapterCategoryList(ArrayList<Category> categories, ICategoryListListener listener){
         this.categories = categories;
-        this.context = context;
         this.listener = listener;
     }
 
     @NonNull
     @Override
     public CategoryListViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-        final View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.item_list, parent, false);
-        return new CategoryListViewHolder(view, context, listener);
+        final View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.item_category_product_list, parent, false);
+        return new CategoryListViewHolder(view, listener);
     }
 
     @Override
@@ -54,12 +52,10 @@ public class AdapterCategoryList extends RecyclerView.Adapter<AdapterCategoryLis
 
         private ImageView ivImage;
         private TextView tvName;
-        private Context context;
         private ICategoryListListener listener;
 
-        public CategoryListViewHolder(View view, Context context, ICategoryListListener listener){
+        public CategoryListViewHolder(View view, ICategoryListListener listener){
             super(view);
-            this.context = context;
             this.listener = listener;
             view.setOnClickListener(this);
 

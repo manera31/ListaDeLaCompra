@@ -7,6 +7,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.EditText;
+import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -17,6 +18,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.joanmanera.listadelacompra.Adapters.AdapterCategoryList;
 import com.joanmanera.listadelacompra.Adapters.AdapterProductList;
 import com.joanmanera.listadelacompra.Interfaces.ICategoryListListener;
+import com.joanmanera.listadelacompra.Interfaces.IProductListListener;
 import com.joanmanera.listadelacompra.Models.Category;
 import com.joanmanera.listadelacompra.Models.Product;
 import com.joanmanera.listadelacompra.R;
@@ -54,9 +56,8 @@ public class FragmentProductList extends Fragment {
         });
 
         rvList = view.findViewById(R.id.rvList);
-        adapterProductList = new AdapterProductList(products, getActivity());
-        rvList.setAdapter(adapterProductList);
-        rvList.setLayoutManager(new GridLayoutManager(getActivity(), SPAN_COUNT));
+
+
         return view;
     }
 
@@ -80,5 +81,11 @@ public class FragmentProductList extends Fragment {
 
         adapterProductList.setProducts(filteredProducts);
 
+    }
+
+    public void setProductListListener(IProductListListener listener){
+        adapterProductList = new AdapterProductList(products, listener, getActivity());
+        rvList.setAdapter(adapterProductList);
+        rvList.setLayoutManager(new GridLayoutManager(getActivity(), SPAN_COUNT));
     }
 }
