@@ -4,15 +4,16 @@ import android.content.Context;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.CheckBox;
+import android.widget.CompoundButton;
 import android.widget.ImageView;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.bumptech.glide.Glide;
-import com.joanmanera.listadelacompra.Activities.ListProductActivity;
 import com.joanmanera.listadelacompra.Interfaces.IProductListListener;
+import com.joanmanera.listadelacompra.Models.List;
 import com.joanmanera.listadelacompra.Models.Product;
 import com.joanmanera.listadelacompra.R;
 
@@ -23,6 +24,7 @@ public class AdapterProductList extends RecyclerView.Adapter<AdapterProductList.
     private ArrayList<Product> products;
     private IProductListListener listener;
     private Context context;
+    private List list;
 
     public AdapterProductList(ArrayList<Product> products, IProductListListener listener, Context context){
         this.products = products;
@@ -33,7 +35,7 @@ public class AdapterProductList extends RecyclerView.Adapter<AdapterProductList.
     @NonNull
     @Override
     public ProductViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-        final View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.item_category_product_list, parent, false);
+        final View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.item_product_list, parent, false);
         return new ProductViewHolder(view, listener, context);
     }
 
@@ -52,10 +54,19 @@ public class AdapterProductList extends RecyclerView.Adapter<AdapterProductList.
         notifyDataSetChanged();
     }
 
-    public class ProductViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
+    public void setList(List list){
+        this.list = list;
+        notifyDataSetChanged();
+    }
+
+    public void refresh(){
+        notifyDataSetChanged();
+    }
+
+    public class ProductViewHolder extends RecyclerView.ViewHolder implements CompoundButton.OnCheckedChangeListener {
 
         private ImageView ivImage;
-        private TextView tvName;
+        private CheckBox cbName;
         private IProductListListener listener;
         private Context context;
 
@@ -63,21 +74,30 @@ public class AdapterProductList extends RecyclerView.Adapter<AdapterProductList.
             super(view);
             this.listener = listener;
             this.context = context;
-            view.setOnClickListener(this);
-            ivImage = view.findViewById(R.id.ivImage);
-            tvName = view.findViewById(R.id.tvName);
+            ivImage = view.findViewById(R.id.ivProductImage);
+            cbName = view.findViewById(R.id.cbProductName);
+            cbName.setOnCheckedChangeListener(this);
         }
 
         public void bindCategory(int position){
             Product product = products.get(position);
             ivImage.setImageResource(product.getImage());
-            tvName.setText(product.getName());
+            cbName.setText(product.getName());
+
+            for (Product p: list.getProducts()){
+                if (product.getName().toLowerCase().equals(p.getName().toLowerCase()) && !cbName.isChecked()){
+                    cbName.setChecked(true);
+                }
+            }
         }
 
         @Override
-        public void onClick(View v) {
-            //Glide.with(context).load(R.drawable.baseline_done_24).into(ivImage);
-            listener.onProductListSelected(products.get(getAdapterPosition()));
+        public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+            if (isChecked){
+                listener.onProductListSelected(products.get(getAdapterPosition()), true);
+            } else {
+                listener.onProductListSelected(products.get(getAdapterPosition()), false);
+            }
         }
     }
 }

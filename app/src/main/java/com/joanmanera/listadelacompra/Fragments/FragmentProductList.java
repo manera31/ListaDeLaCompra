@@ -20,6 +20,7 @@ import com.joanmanera.listadelacompra.Adapters.AdapterProductList;
 import com.joanmanera.listadelacompra.Interfaces.ICategoryListListener;
 import com.joanmanera.listadelacompra.Interfaces.IProductListListener;
 import com.joanmanera.listadelacompra.Models.Category;
+import com.joanmanera.listadelacompra.Models.List;
 import com.joanmanera.listadelacompra.Models.Product;
 import com.joanmanera.listadelacompra.R;
 
@@ -69,6 +70,14 @@ public class FragmentProductList extends Fragment {
     public void show(ArrayList<Product> products){
         this.products = products;
         adapterProductList.setProducts(products);
+    }
+
+    public void setList(List list){
+        adapterProductList.setList(list);
+    }
+
+    public void refreshAdapter(){
+        adapterProductList.refresh();
     }
 
     private void filter(String s){

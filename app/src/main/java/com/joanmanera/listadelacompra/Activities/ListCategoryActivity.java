@@ -9,6 +9,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import com.joanmanera.listadelacompra.Fragments.FragmentCategoryList;
 import com.joanmanera.listadelacompra.Interfaces.ICategoryListListener;
 import com.joanmanera.listadelacompra.Models.Category;
+import com.joanmanera.listadelacompra.Models.List;
 import com.joanmanera.listadelacompra.Models.Product;
 import com.joanmanera.listadelacompra.R;
 
@@ -16,7 +17,9 @@ import java.util.ArrayList;
 
 public class ListCategoryActivity extends AppCompatActivity implements ICategoryListListener {
     public static final String EXTRA_LIST_CATEGORY = "com.joanmanera.listadelacompra.EXTRA";
+    public static final String EXTRA_LIST = "com.joanmanera.listadelacompra.LIST";
     private ArrayList<Category> categories;
+    private List list;
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
@@ -25,6 +28,7 @@ public class ListCategoryActivity extends AppCompatActivity implements ICategory
         FragmentCategoryList fragmentCategoryList = (FragmentCategoryList)getSupportFragmentManager().findFragmentById(R.id.fCategoryList);
         fragmentCategoryList.setCategoryListListener(this);
         categories = (ArrayList<Category>)getIntent().getSerializableExtra(EXTRA_LIST_CATEGORY);
+        list = (List)getIntent().getSerializableExtra(EXTRA_LIST);
         fragmentCategoryList.show(categories);
         setTitle("Categorías");
 
@@ -34,6 +38,7 @@ public class ListCategoryActivity extends AppCompatActivity implements ICategory
     public void onCategoryListSelected(ArrayList<Product> products) {
         Intent i = new Intent(this, ListProductActivity.class);
         i.putExtra(ListProductActivity.EXTRA_LIST_PRODUCT, products);
+        i.putExtra(ListProductActivity.EXTRA_LIST, list);
         startActivity(i);
     }
 }

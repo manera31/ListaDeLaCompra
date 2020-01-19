@@ -19,19 +19,12 @@ import java.util.ArrayList;
 
 public class MainActivity extends Activity {
     private ArrayList<Category> categories;
+    private ArrayList<List> lists;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-
-
-        ArrayList<List> lists = new ArrayList<>();
-        lists.add(new List("lista 1", new ArrayList<Product>()));
-        lists.add(new List("lista 2", new ArrayList<Product>()));
-        lists.add(new List("lista 3", new ArrayList<Product>()));
-        lists.add(new List("lista 4", new ArrayList<Product>()));
-        lists.add(new List("lista 5", new ArrayList<Product>()));
 
         ArrayList<Product> products = new ArrayList<>();
         products.add(new Product("prod1", R.drawable.carne));
@@ -41,11 +34,22 @@ public class MainActivity extends Activity {
         categories.add(new Category("Carne", R.drawable.carne, products));
         categories.add(new Category("Pescado", R.drawable.pescado, products));
 
-        Intent i = new Intent(this, ListActivity.class);
-        i.putExtra(ListActivity.EXTRA_LIST, lists);
-        startActivityForResult(i, 0);
+        lists = new ArrayList<>();
+        lists.add(new List("lista 1", products));
+        lists.add(new List("lista 2", new ArrayList<Product>()));
+        lists.add(new List("lista 3", new ArrayList<Product>()));
+        lists.add(new List("lista 4", new ArrayList<Product>()));
+        lists.add(new List("lista 5", new ArrayList<Product>()));
 
-
+        Button button = findViewById(R.id.button);
+        button.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent i = new Intent(MainActivity.this, ListActivity.class);
+                i.putExtra(ListActivity.EXTRA_LIST, lists);
+                startActivityForResult(i, 0);
+            }
+        });
 
     }
 
@@ -59,6 +63,7 @@ public class MainActivity extends Activity {
 
             Intent cat = new Intent(this, ListCategoryActivity.class);
             cat.putExtra(ListCategoryActivity.EXTRA_LIST_CATEGORY, categories);
+            cat.putExtra(ListCategoryActivity.EXTRA_LIST, list);
             startActivity(cat);
         }
     }

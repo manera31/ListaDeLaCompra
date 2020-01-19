@@ -1,6 +1,5 @@
 package com.joanmanera.listadelacompra.Adapters;
 
-import android.content.Context;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -29,7 +28,7 @@ public class AdapterCategoryList extends RecyclerView.Adapter<AdapterCategoryLis
     @NonNull
     @Override
     public CategoryListViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-        final View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.item_category_product_list, parent, false);
+        final View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.item_category_list, parent, false);
         return new CategoryListViewHolder(view, listener);
     }
 
@@ -59,7 +58,7 @@ public class AdapterCategoryList extends RecyclerView.Adapter<AdapterCategoryLis
             this.listener = listener;
             view.setOnClickListener(this);
 
-            ivImage = view.findViewById(R.id.ivImage);
+            ivImage = view.findViewById(R.id.ivCategoryImage);
             tvName = view.findViewById(R.id.tvName);
         }
 
