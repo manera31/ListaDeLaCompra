@@ -84,20 +84,16 @@ public class AdapterProductList extends RecyclerView.Adapter<AdapterProductList.
             ivImage.setImageResource(product.getImage());
             cbName.setText(product.getName());
 
-            for (Product p: list.getProducts()){
+            /*for (Product p: list.getProducts()){
                 if (product.getName().toLowerCase().equals(p.getName().toLowerCase()) && !cbName.isChecked()){
                     cbName.setChecked(true);
                 }
-            }
+            }*/
         }
 
         @Override
         public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-            if (isChecked){
-                listener.onProductListSelected(products.get(getAdapterPosition()), true);
-            } else {
-                listener.onProductListSelected(products.get(getAdapterPosition()), false);
-            }
+            listener.onProductListSelected(products.get(getAdapterPosition()), isChecked);
         }
     }
 }
