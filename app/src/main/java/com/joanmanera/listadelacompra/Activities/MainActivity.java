@@ -64,6 +64,10 @@ public class MainActivity extends Activity {
         lists.add(new List("lista 4", new ArrayList<Product>()));
         lists.add(new List("lista 5", new ArrayList<Product>()));
 
+        intentList = new Intent(MainActivity.this, ListActivity.class);
+        intentList.putExtra(ListActivity.EXTRA_LIST, lists);
+        startActivityForResult(intentList, 3);
+
         Button button = findViewById(R.id.button);
         button.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -72,17 +76,13 @@ public class MainActivity extends Activity {
             }
         });
 
-        Button verLista = findViewById(R.id.button2);
-        verLista.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                intentList = new Intent(MainActivity.this, ListActivity.class);
-                intentList.putExtra(ListActivity.EXTRA_LIST, lists);
-                startActivityForResult(intentList, 3);
 
-            }
-        });
+    }
 
+    @Override
+    protected void onResume() {
+        super.onResume();
+        Toast.makeText(this, "resume", Toast.LENGTH_SHORT).show();
     }
 
     private void lanzarIntentList(){
