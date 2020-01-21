@@ -6,5 +6,5 @@ import java.io.Serializable;
 import java.util.ArrayList;
 
 public interface IListListener extends Serializable {
-    void onListSelected(List list);
+    void onListSelected(int list);
 }

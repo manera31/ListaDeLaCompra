@@ -27,27 +27,38 @@ public class MainActivity extends Activity {
     private Intent intentList;
     private Intent intentCategoryList;
     private Intent intentProductList;
-    private List selectedList;
-    private Category selectedCategory;
+    private int selectedList;
+    private int selectedCategory;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        ArrayList<Product> products1 = new ArrayList<>();
-        products1.add(new Product("prod1", R.drawable.carne));
-        products1.add(new Product("prod2", R.drawable.pescado));
-        ArrayList<Product> products2 = new ArrayList<>();
-        products1.add(new Product("prod3", R.drawable.carne));
-        products1.add(new Product("prod4", R.drawable.pescado));
+        Product p1 = new Product("carne1", R.drawable.carne);
+        Product p2 = new Product("pescado1", R.drawable.pescado);
+
+        Product p3 = new Product("carne2", R.drawable.carne);
+        Product p4 = new Product("pescado2", R.drawable.pescado);
+
+        ArrayList<Product> productsCarne = new ArrayList<>();
+        productsCarne.add(p1);
+        productsCarne.add(p3);
+
+        ArrayList<Product> productsPescado = new ArrayList<>();
+        productsPescado.add(p2);
+        productsPescado.add(p4);
 
         categories = new ArrayList<>();
-        categories.add(new Category("Carne", R.drawable.carne, products1));
-        categories.add(new Category("Pescado", R.drawable.pescado, products2));
+        categories.add(new Category("Carne", R.drawable.carne, productsCarne));
+        categories.add(new Category("Pescado", R.drawable.pescado, productsPescado));
+
+        ArrayList<Product> prodlist = new ArrayList<>();
+        prodlist.add(p3);
+        prodlist.add(p4);
 
         lists = new ArrayList<>();
-        lists.add(new List("lista 1", products1));
+        lists.add(new List("lista 1", prodlist));
         lists.add(new List("lista 2", new ArrayList<Product>()));
         lists.add(new List("lista 3", new ArrayList<Product>()));
         lists.add(new List("lista 4", new ArrayList<Product>()));
@@ -58,6 +69,17 @@ public class MainActivity extends Activity {
             @Override
             public void onClick(View v) {
                 lanzarIntentList();
+            }
+        });
+
+        Button verLista = findViewById(R.id.button2);
+        verLista.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                intentList = new Intent(MainActivity.this, ListActivity.class);
+                intentList.putExtra(ListActivity.EXTRA_LIST, lists);
+                startActivityForResult(intentList, 3);
+
             }
         });
 
@@ -77,7 +99,7 @@ public class MainActivity extends Activity {
 
     private void lanzarIntentProductList(){
         intentProductList = new Intent(this, ListProductActivity.class);
-        intentProductList.putExtra(ListProductActivity.EXTRA_LIST_PRODUCT, selectedCategory.getProducts());
+        intentProductList.putExtra(ListProductActivity.EXTRA_LIST_PRODUCT, categories.get(selectedCategory).getProducts());
         startActivityForResult(intentProductList, 2);
     }
 
@@ -88,29 +110,46 @@ public class MainActivity extends Activity {
         if (resultCode == Activity.RESULT_OK) {
             switch (requestCode) {
                 case 0:
-                    selectedList = (List) data.getSerializableExtra("list");
+                    selectedList = data.getIntExtra("list", -1);
                     lanzarIntentCategoryList();
                     break;
                 case 1:
-                    selectedCategory = (Category) data.getSerializableExtra("category");
+                    selectedCategory = data.getIntExtra("category", -1);
                     lanzarIntentProductList();
                     break;
                 case 2:
                     Product selectedProduct = (Product) data.getSerializableExtra("product");
-                    boolean isChecked = data.getBooleanExtra("isChecked", false);
-                    Toast.makeText(this, selectedProduct.getName() + ", " + isChecked, Toast.LENGTH_SHORT).show();
+                    boolean isinList = false;
+
+                    for (Product p: lists.get(selectedList).getProducts()){
+                        if(p.getName().equals(selectedProduct.getName())){
+                            isinList = true;
+                        }
+                    }
+
+                    if (isinList){
+                        Product productRemove = null;
+
+                        for (Product p: lists.get(selectedList).getProducts()){
+                            if(p.getName().equals(selectedProduct.getName())){
+                                productRemove = p;
+                            }
+                        }
+
+                        lists.get(selectedList).getProducts().remove(productRemove);
+                    } else {
+                        lists.get(selectedList).getProducts().add(selectedProduct);
+                    }
+
+                    Toast.makeText(this, selectedProduct.getName() , Toast.LENGTH_SHORT).show();
+                    break;
+                case 3:
+                    selectedList = data.getIntExtra("list", -1);
+                    intentProductList = new Intent(MainActivity.this, ListProductActivity.class);
+                    intentProductList.putExtra(ListProductActivity.EXTRA_LIST_PRODUCT, lists.get(selectedList).getProducts());
+                    startActivity(intentProductList);
                     break;
             }
         }
-
-        /*if (resultCode == Activity.RESULT_OK){
-            list = (List)data.getSerializableExtra("list");
-            //Toast.makeText(this, list.getName(), Toast.LENGTH_LONG).show();
-
-            Intent cat = new Intent(this, ListCategoryActivity.class);
-            cat.putExtra(ListCategoryActivity.EXTRA_LIST_CATEGORY, categories);
-            cat.putExtra(ListCategoryActivity.EXTRA_LIST, (Serializable) listener);
-            startActivity(cat);
-        }*/
     }
 }

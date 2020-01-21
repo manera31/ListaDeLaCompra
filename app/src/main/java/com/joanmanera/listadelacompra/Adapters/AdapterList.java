@@ -74,7 +74,7 @@ public class AdapterList extends RecyclerView.Adapter<AdapterList.ListViewHolder
         @Override
         public void onClick(View v) {
             if (listener != null){
-                listener.onListSelected(lists.get(getAdapterPosition()));
+                listener.onListSelected(getAdapterPosition());
             }
         }
     }

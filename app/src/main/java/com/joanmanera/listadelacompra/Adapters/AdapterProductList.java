@@ -24,7 +24,6 @@ public class AdapterProductList extends RecyclerView.Adapter<AdapterProductList.
     private ArrayList<Product> products;
     private IProductListListener listener;
     private Context context;
-    private List list;
 
     public AdapterProductList(ArrayList<Product> products, IProductListListener listener, Context context){
         this.products = products;
@@ -54,19 +53,14 @@ public class AdapterProductList extends RecyclerView.Adapter<AdapterProductList.
         notifyDataSetChanged();
     }
 
-    public void setList(List list){
-        this.list = list;
-        notifyDataSetChanged();
-    }
-
     public void refresh(){
         notifyDataSetChanged();
     }
 
-    public class ProductViewHolder extends RecyclerView.ViewHolder implements CompoundButton.OnCheckedChangeListener {
+    public class ProductViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
 
         private ImageView ivImage;
-        private CheckBox cbName;
+        private TextView tvName;
         private IProductListListener listener;
         private Context context;
 
@@ -75,25 +69,20 @@ public class AdapterProductList extends RecyclerView.Adapter<AdapterProductList.
             this.listener = listener;
             this.context = context;
             ivImage = view.findViewById(R.id.ivProductImage);
-            cbName = view.findViewById(R.id.cbProductName);
-            cbName.setOnCheckedChangeListener(this);
+            tvName = view.findViewById(R.id.tvNameProduct);
+            view.setOnClickListener(this);
         }
 
         public void bindCategory(int position){
             Product product = products.get(position);
             ivImage.setImageResource(product.getImage());
-            cbName.setText(product.getName());
-
-            /*for (Product p: list.getProducts()){
-                if (product.getName().toLowerCase().equals(p.getName().toLowerCase()) && !cbName.isChecked()){
-                    cbName.setChecked(true);
-                }
-            }*/
+            tvName.setText(product.getName());
         }
 
         @Override
-        public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-            listener.onProductListSelected(products.get(getAdapterPosition()), isChecked);
+        public void onClick(View v) {
+            Product product = products.get(getAdapterPosition());
+            listener.onProductListSelected(product);
         }
     }
 }

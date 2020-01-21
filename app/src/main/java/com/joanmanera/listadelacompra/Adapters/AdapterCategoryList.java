@@ -72,7 +72,7 @@ public class AdapterCategoryList extends RecyclerView.Adapter<AdapterCategoryLis
         @Override
         public void onClick(View v) {
             if (listener != null){
-                listener.onCategoryListSelected(categories.get(getAdapterPosition()));
+                listener.onCategoryListSelected(getAdapterPosition());
             }
         }
     }

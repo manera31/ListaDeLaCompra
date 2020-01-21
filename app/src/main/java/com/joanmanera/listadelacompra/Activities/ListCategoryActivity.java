@@ -20,10 +20,8 @@ import java.io.Serializable;
 import java.util.ArrayList;
 
 public class ListCategoryActivity extends AppCompatActivity implements ICategoryListListener {
-    public static final String EXTRA_LIST_CATEGORY = "com.joanmanera.listadelacompra.EXTRA";
-    public static final String EXTRA_LIST = "com.joanmanera.listadelacompra.LIST_LISTENER";
+    public static final String EXTRA_LIST_CATEGORY = "com.joanmanera.listadelacompra.CATEGORIES";
     private ArrayList<Category> categories;
-    private IProductListListener listener;
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
@@ -32,14 +30,13 @@ public class ListCategoryActivity extends AppCompatActivity implements ICategory
         FragmentCategoryList fragmentCategoryList = (FragmentCategoryList)getSupportFragmentManager().findFragmentById(R.id.fCategoryList);
         fragmentCategoryList.setCategoryListListener(this);
         categories = (ArrayList<Category>)getIntent().getSerializableExtra(EXTRA_LIST_CATEGORY);
-        listener = (IProductListListener) getIntent().getSerializableExtra(EXTRA_LIST);
         fragmentCategoryList.show(categories);
         setTitle("Categorías");
 
     }
 
     @Override
-    public void onCategoryListSelected(Category category) {
+    public void onCategoryListSelected(int category) {
         Intent result = new Intent();
         result.putExtra("category", category);
         setResult(Activity.RESULT_OK, result);

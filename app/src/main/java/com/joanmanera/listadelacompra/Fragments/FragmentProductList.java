@@ -72,9 +72,6 @@ public class FragmentProductList extends Fragment {
         adapterProductList.setProducts(products);
     }
 
-    public void setList(List list){
-        adapterProductList.setList(list);
-    }
 
     public void refreshAdapter(){
         adapterProductList.refresh();

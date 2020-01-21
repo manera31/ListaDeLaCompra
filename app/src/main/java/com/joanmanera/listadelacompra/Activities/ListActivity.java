@@ -36,7 +36,7 @@ public class ListActivity extends AppCompatActivity implements IListListener {
 
 
     @Override
-    public void onListSelected(List list) {
+    public void onListSelected(int list) {
         Intent result = new Intent();
         result.putExtra("list", list);
         setResult(Activity.RESULT_OK, result);
