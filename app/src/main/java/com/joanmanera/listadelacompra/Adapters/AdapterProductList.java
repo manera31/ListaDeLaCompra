@@ -24,17 +24,19 @@ public class AdapterProductList extends RecyclerView.Adapter<AdapterProductList.
     private ArrayList<Product> products;
     private IProductListListener listener;
     private Context context;
+    private int layout;
 
-    public AdapterProductList(ArrayList<Product> products, IProductListListener listener, Context context){
+    public AdapterProductList(ArrayList<Product> products, IProductListListener listener, Context context, int layout){
         this.products = products;
         this.listener = listener;
         this.context = context;
+        this.layout = layout;
     }
 
     @NonNull
     @Override
     public ProductViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-        final View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.item_product_list, parent, false);
+        final View view = LayoutInflater.from(parent.getContext()).inflate(layout, parent, false);
         return new ProductViewHolder(view, listener, context);
     }
 
@@ -50,10 +52,6 @@ public class AdapterProductList extends RecyclerView.Adapter<AdapterProductList.
 
     public void setProducts(ArrayList<Product> products){
         this.products = products;
-        notifyDataSetChanged();
-    }
-
-    public void refresh(){
         notifyDataSetChanged();
     }
 
@@ -82,7 +80,9 @@ public class AdapterProductList extends RecyclerView.Adapter<AdapterProductList.
         @Override
         public void onClick(View v) {
             Product product = products.get(getAdapterPosition());
-            listener.onProductListSelected(product);
+            if(listener != null){
+                listener.onProductListSelected(product);
+            }
         }
     }
 }

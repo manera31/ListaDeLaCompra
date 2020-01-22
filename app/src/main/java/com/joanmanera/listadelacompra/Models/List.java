@@ -6,12 +6,18 @@ import java.util.GregorianCalendar;
 
 public class List implements Serializable {
     private String name;
-    private GregorianCalendar date;
+    private String date;
     private ArrayList<Product> products;
 
     public List(String name, ArrayList<Product> products) {
         this.name = name;
-        this.date = new GregorianCalendar();
+        this.date = new GregorianCalendar().getTime().toString();
+        this.products = products;
+    }
+
+    public List(String name, String date, ArrayList<Product> products) {
+        this.name = name;
+        this.date = date;
         this.products = products;
     }
 
@@ -23,11 +29,11 @@ public class List implements Serializable {
         this.name = name;
     }
 
-    public GregorianCalendar getDate() {
+    public String getDate() {
         return date;
     }
 
-    public void setDate(GregorianCalendar date) {
+    public void setDate(String date) {
         this.date = date;
     }
 

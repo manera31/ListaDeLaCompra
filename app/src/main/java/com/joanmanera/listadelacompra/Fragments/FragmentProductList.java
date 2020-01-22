@@ -72,11 +72,6 @@ public class FragmentProductList extends Fragment {
         adapterProductList.setProducts(products);
     }
 
-
-    public void refreshAdapter(){
-        adapterProductList.refresh();
-    }
-
     private void filter(String s){
         ArrayList<Product> filteredProducts = new ArrayList<>();
         for (Product p: products){
@@ -90,7 +85,7 @@ public class FragmentProductList extends Fragment {
     }
 
     public void setProductListListener(IProductListListener listener){
-        adapterProductList = new AdapterProductList(products, listener, getActivity());
+        adapterProductList = new AdapterProductList(products, listener, getActivity(), R.layout.item_product_list);
         rvList.setAdapter(adapterProductList);
         rvList.setLayoutManager(new GridLayoutManager(getActivity(), SPAN_COUNT));
     }

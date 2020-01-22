@@ -2,93 +2,97 @@ package com.joanmanera.listadelacompra.Activities;
 
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 
 import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
+import android.text.Editable;
+import android.text.TextWatcher;
 import android.view.View;
 import android.widget.Button;
+import android.widget.EditText;
 import android.widget.Toast;
 
+import com.joanmanera.listadelacompra.Adapters.AdapterList;
 import com.joanmanera.listadelacompra.Interfaces.IListListener;
 import com.joanmanera.listadelacompra.Interfaces.IProductListListener;
 import com.joanmanera.listadelacompra.Models.Category;
 import com.joanmanera.listadelacompra.Models.List;
 import com.joanmanera.listadelacompra.Models.Product;
 import com.joanmanera.listadelacompra.R;
+import com.joanmanera.listadelacompra.SQLiteHelper;
 
 import java.io.Serializable;
 import java.util.ArrayList;
 
-public class MainActivity extends Activity {
+public class MainActivity extends AppCompatActivity implements IListListener {
     private ArrayList<Category> categories;
     private ArrayList<List> lists;
 
-    private Intent intentList;
+    //private Intent intentList;
     private Intent intentCategoryList;
     private Intent intentProductList;
+    private Intent getIntentProductListCart;
     private int selectedList;
     private int selectedCategory;
+
+
+    private AdapterList adapterList;
+    private RecyclerView rvList;
+    private EditText etFilter;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_main);
+        setContentView(R.layout.fragment_list);
 
-        Product p1 = new Product("carne1", R.drawable.carne);
-        Product p2 = new Product("pescado1", R.drawable.pescado);
+        SQLiteHelper sqLiteHelper = SQLiteHelper.getInstance(this);
+        if (sqLiteHelper.cargarDatos()){
+            Toast.makeText(this, "Datos cargados", Toast.LENGTH_SHORT).show();
+        } else {
+            Toast.makeText(this, "Datos no cargados", Toast.LENGTH_SHORT).show();
+        }
 
-        Product p3 = new Product("carne2", R.drawable.carne);
-        Product p4 = new Product("pescado2", R.drawable.pescado);
+        lists = sqLiteHelper.getListas();
+        categories = sqLiteHelper.getCategorias();
 
-        ArrayList<Product> productsCarne = new ArrayList<>();
-        productsCarne.add(p1);
-        productsCarne.add(p3);
-
-        ArrayList<Product> productsPescado = new ArrayList<>();
-        productsPescado.add(p2);
-        productsPescado.add(p4);
-
-        categories = new ArrayList<>();
-        categories.add(new Category("Carne", R.drawable.carne, productsCarne));
-        categories.add(new Category("Pescado", R.drawable.pescado, productsPescado));
-
-        ArrayList<Product> prodlist = new ArrayList<>();
-        prodlist.add(p3);
-        prodlist.add(p4);
-
-        lists = new ArrayList<>();
-        lists.add(new List("lista 1", prodlist));
-        lists.add(new List("lista 2", new ArrayList<Product>()));
-        lists.add(new List("lista 3", new ArrayList<Product>()));
-        lists.add(new List("lista 4", new ArrayList<Product>()));
-        lists.add(new List("lista 5", new ArrayList<Product>()));
-
-        intentList = new Intent(MainActivity.this, ListActivity.class);
-        intentList.putExtra(ListActivity.EXTRA_LIST, lists);
-        startActivityForResult(intentList, 3);
-
-        Button button = findViewById(R.id.button);
-        button.setOnClickListener(new View.OnClickListener() {
+        rvList = findViewById(R.id.rvList);
+        etFilter = findViewById(R.id.etFilter);
+        etFilter.addTextChangedListener(new TextWatcher() {
             @Override
-            public void onClick(View v) {
-                lanzarIntentList();
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+
+            }
+
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+
+            }
+
+            @Override
+            public void afterTextChanged(Editable s) {
+                filter(s.toString());
             }
         });
-
+        adapterList = new AdapterList(lists, this);
+        rvList.setAdapter(adapterList);
+        rvList.setLayoutManager(new LinearLayoutManager(this,LinearLayoutManager.VERTICAL,false));
+        adapterList.setLists(lists);
+        setTitle("Listas");
 
     }
 
-    @Override
-    protected void onResume() {
-        super.onResume();
-        Toast.makeText(this, "resume", Toast.LENGTH_SHORT).show();
-    }
+    private void filter(String s){
+        ArrayList<List> filteredLists = new ArrayList<>();
+        for (List l: lists){
+            if(l.getName().toLowerCase().contains(s.toLowerCase())){
+                filteredLists.add(l);
+            }
+        }
 
-    private void lanzarIntentList(){
-        intentList = new Intent(MainActivity.this, ListActivity.class);
-        intentList.putExtra(ListActivity.EXTRA_LIST, lists);
-        startActivityForResult(intentList, 0);
+        adapterList.setLists(filteredLists);
     }
 
     private void lanzarIntentCategoryList(){
@@ -107,7 +111,7 @@ public class MainActivity extends Activity {
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
 
-        if (resultCode == Activity.RESULT_OK) {
+        /*if (resultCode == Activity.RESULT_OK) {
             switch (requestCode) {
                 case 0:
                     selectedList = data.getIntExtra("list", -1);
@@ -150,6 +154,16 @@ public class MainActivity extends Activity {
                     startActivity(intentProductList);
                     break;
             }
-        }
+        }*/
+    }
+
+    @Override
+    public void onListSelected(int list) {
+        this.selectedList = list;
+        Toast.makeText(this, String.valueOf(list), Toast.LENGTH_SHORT).show();
+
+        getIntentProductListCart = new Intent(this, ListProductCartActivity.class);
+        getIntentProductListCart.putExtra(ListProductCartActivity.EXTRA_LIST_PRODUCT, lists.get(selectedList).getProducts());
+        startActivity(getIntentProductListCart);
     }
 }

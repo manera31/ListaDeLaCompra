@@ -66,7 +66,7 @@ public class AdapterList extends RecyclerView.Adapter<AdapterList.ListViewHolder
             List list = lists.get(position);
 
             tvNameList.setText(list.getName());
-            tvDataList.setText(list.getDate().getTime().toString());
+            tvDataList.setText(list.getDate());
             tvProductCountList.setText(String.valueOf(list.getProducts().size()));
 
         }
