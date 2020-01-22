@@ -1,6 +1,5 @@
 package com.joanmanera.listadelacompra.Fragments;
 
-import android.content.Context;
 import android.os.Bundle;
 import android.text.Editable;
 import android.text.TextWatcher;
@@ -8,13 +7,11 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.EditText;
-import android.widget.TextView;
+import android.widget.LinearLayout;
 
-import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.GridLayoutManager;
-import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.joanmanera.listadelacompra.Adapters.AdapterCategoryList;
@@ -35,7 +32,7 @@ public class FragmentCategoryList extends Fragment {
     @Nullable
     @Override
     public View onCreateView( LayoutInflater inflater, @Nullable ViewGroup container, Bundle savedInstanceState) {
-        final View view = inflater.inflate(R.layout.fragment_list, container, false);
+        final View view = inflater.inflate(R.layout.fragment_product_category_list, container, false);
 
         etFilter = view.findViewById(R.id.etFilter);
         etFilter.addTextChangedListener(new TextWatcher() {
@@ -56,9 +53,9 @@ public class FragmentCategoryList extends Fragment {
         });
 
         rvList = view.findViewById(R.id.rvList);
-        //adapterCategoryList = new AdapterCategoryList(categories, getActivity(), listener);
-        //rvList.setAdapter(adapterCategoryList);
-        //rvList.setLayoutManager(new GridLayoutManager(getActivity(), SPAN_COUNT));
+
+        LinearLayout llAddList = view.findViewById(R.id.llAddList);
+        llAddList.setVisibility(View.INVISIBLE);
 
 
         return view;

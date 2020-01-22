@@ -13,15 +13,7 @@ import com.joanmanera.listadelacompra.Models.List;
 import com.joanmanera.listadelacompra.Models.Product;
 
 import java.util.ArrayList;
-
-/**
- * SqlHelper, con esta clase vamos a cargar y controlar todos los datos de nuestra aplicacion.
- * todos los datos persistentes y los datos comunes entre las diversas activities de nuestro
- * proyecto son tratados aquí.
- * Para ello aplicamos singleton.
- */
 public class SQLiteHelper extends SQLiteOpenHelper {
-    //Singleton
     private static SQLiteHelper sqlHelper=null;
     public static SQLiteHelper getInstance(Context context){
         if(sqlHelper==null){
@@ -29,39 +21,38 @@ public class SQLiteHelper extends SQLiteOpenHelper {
         }
         return sqlHelper;
     }
-    //Sql things
+
     private static final String dbName="ListaCompra.db";
     private static final int dbVersion=1;
     private static final String CREATE_CATEGORIAS ="CREATE TABLE Categorias (nombre STRING PRIMARY KEY, imagen INTEGER);";
     private static final String CREATE_PRODUCTOS ="CREATE TABLE Productos (nombre STRING PRIMARY KEY, categoria STRING REFERENCES Categorias (Nombre), image INTEGER);";
     private static final String CREATE_LISTAS ="CREATE TABLE ListasCompra (nombre STRING PRIMARY KEY, fecha STRING);";
-    private static final String CREATE_ITEM_LISTA ="CREATE TABLE ItemsListaCompra (id INTEGER PRIMARY KEY , producto STRING REFERENCES Productos (nombre), nombreLista STRING REFERENCES ListasCompra (nombre) ON DELETE CASCADE ON UPDATE CASCADE, comprado BOOLEAN);";
+    private static final String CREATE_ITEM_LISTA ="CREATE TABLE ItemsListaCompra (producto STRING REFERENCES Productos (nombre), nombreLista STRING REFERENCES ListasCompra (nombre) ON DELETE CASCADE ON UPDATE CASCADE, comprado BOOLEAN, PRIMARY KEY(producto, nombreLista));";
 
     private static final String[] INSERT_CATEGORIAS ={
-            "INSERT INTO Categorias (Nombre, imagen) VALUES ('Quesos', 0x1F9C0 );" ,
-            "INSERT INTO Categorias (Nombre, imagen) VALUES ('Carnes y aves',0x1F357 );" ,
-            "INSERT INTO Categorias (Nombre, imagen) VALUES ('Frutas y vegetales', 0x1F34E);" ,
-            "INSERT INTO Categorias (Nombre, imagen) VALUES ('Otros', 0x1F3F7);" ,
-            "INSERT INTO Categorias (Nombre, imagen) VALUES ('Pescado', 0x1F41F);"};
+            "INSERT INTO Categorias (Nombre, imagen) VALUES ('Carnes',"+  R.drawable.carne + " );" ,
+            "INSERT INTO Categorias (Nombre, imagen) VALUES ('Frutas y verduras', "+  R.drawable.frutas + ");" ,
+            "INSERT INTO Categorias (Nombre, imagen) VALUES ('Pescado', "+  R.drawable.pescado + ");" ,
+            "INSERT INTO Categorias (Nombre, imagen) VALUES ('Quesos',"+  R.drawable.queso + " );" ,
+            "INSERT INTO Categorias (Nombre, imagen) VALUES ('Otros', "+  R.drawable.pasta_dientes + ");"};
 
     private static final String[] INSERT_PRODUCTOS ={
-            "INSERT INTO Productos (nombre, categoria, image) VALUES ('Emperador', 'Pescado', NULL);" ,
-            "INSERT INTO Productos (nombre, categoria, image) VALUES ('Ternera', 'Carnes y aves', NULL);" ,
-            "INSERT INTO Productos (nombre, categoria, image) VALUES ('Queso curado', 'Quesos', NULL);" ,
-            "INSERT INTO Productos (nombre, categoria, image) VALUES ('Limones', 'Frutas y vegetales', NULL);" ,
-            "INSERT INTO Productos (nombre, categoria, image) VALUES ('Atun', 'Pescado', NULL);" ,
-            "INSERT INTO Productos (nombre, categoria, image) VALUES ('Pollo', 'Carnes y aves', NULL);" ,
-            "INSERT INTO Productos (nombre, categoria, image) VALUES ('Queso de cabra', 'Quesos', NULL);" ,
-            "INSERT INTO Productos (nombre, categoria, image) VALUES ('Tomates', 'Frutas y vegetales', NULL);",
-            "INSERT INTO Productos (nombre, categoria, image) VALUES ('Fuego Facil', 'Otros', NULL);",
-            "INSERT INTO Productos (nombre, categoria, image) VALUES ('Naranjas', 'Frutas y vegetales', NULL);",
-            "INSERT INTO Productos (nombre, categoria, image) VALUES ('Pasta de Dientes', 'Otros', NULL);"
+            "INSERT INTO Productos (nombre, categoria, image) VALUES ('Emperador', 'Pescado', "+  R.drawable.emperador + ");" ,
+            "INSERT INTO Productos (nombre, categoria, image) VALUES ('Ternera', 'Carnes', "+  R.drawable.ternera + ");" ,
+            "INSERT INTO Productos (nombre, categoria, image) VALUES ('Queso curado', 'Quesos', "+  R.drawable.queso_curado + ");" ,
+            "INSERT INTO Productos (nombre, categoria, image) VALUES ('Limones', 'Frutas y verduras', "+  R.drawable.limon + ");" ,
+            "INSERT INTO Productos (nombre, categoria, image) VALUES ('Atun', 'Pescado', "+  R.drawable.atun + ");" ,
+            "INSERT INTO Productos (nombre, categoria, image) VALUES ('Pollo', 'Carnes', "+  R.drawable.pollo + ");" ,
+            "INSERT INTO Productos (nombre, categoria, image) VALUES ('Queso de cabra', 'Quesos', "+  R.drawable.queso_cabra + ");" ,
+            "INSERT INTO Productos (nombre, categoria, image) VALUES ('Tomates', 'Frutas y verduras', "+  R.drawable.tomate + ");",
+            "INSERT INTO Productos (nombre, categoria, image) VALUES ('Naranjas', 'Frutas y verduras', "+  R.drawable.naranja + ");",
+            "INSERT INTO Productos (nombre, categoria, image) VALUES ('Pasta de Dientes', 'Otros', "+  R.drawable.pasta_dientes + ");"
     };
-    private static final String INSERT_LISTAS ="INSERT INTO ListasCompra (nombre, fecha) VALUES ('Mi Primera Lista', '22/01/2020 00:32');";
+    private static final String INSERT_LISTAS ="INSERT INTO ListasCompra (nombre, fecha) VALUES ('Mi Lista', '22/01/2020 00:32');";
 
     private static final String[] INSERT_ITEM_LISTAS={
-            "INSERT INTO ItemsListaCompra (id, producto, nombreLista, comprado) VALUES (1, 'Tomates', 'Mi Primera Lista', 'true');" ,
-            "INSERT INTO ItemsListaCompra (id, producto, nombreLista, comprado) VALUES (2, 'Ternera', 'Mi Primera Lista', 'false');"};
+            "INSERT INTO ItemsListaCompra (producto, nombreLista, comprado) VALUES ('Tomates', 'Mi Lista', 'true');" ,
+            "INSERT INTO ItemsListaCompra (producto, nombreLista, comprado) VALUES ('Ternera', 'Mi Lista', 'false');"};
 
 
     private SQLiteHelper(@Nullable Context context) {
@@ -71,7 +62,15 @@ public class SQLiteHelper extends SQLiteOpenHelper {
     private ArrayList<Category> categorias;
     private ArrayList<Product> productos;
     private ArrayList<List> listas;
+    private int currentList;
 
+    public int getCurrentList() {
+        return currentList;
+    }
+
+    public void setCurrentList(int currentList) {
+        this.currentList = currentList;
+    }
 
     @Override
     public void onCreate(SQLiteDatabase db) {
@@ -104,15 +103,10 @@ public class SQLiteHelper extends SQLiteOpenHelper {
 
     }
 
-    /**
-     * Funcion principal de carga de datos desde la SQLiteBD
-     * importa el orden en la carga para poder construir correctamente todos los objetos
-     * @return
-     */
     public boolean cargarDatos(){
         SQLiteDatabase db= this.getReadableDatabase();
 
-        //Cargar categorias
+        //Categorias
         categorias=new ArrayList<>();
 
         Cursor c=db.rawQuery("SELECT nombre,imagen FROM Categorias;",null);
@@ -128,21 +122,21 @@ public class SQLiteHelper extends SQLiteOpenHelper {
         //Productos
         productos=new ArrayList<>();
 
-        c=db.rawQuery("SELECT nombre,categoria FROM Productos",null);
+        c=db.rawQuery("SELECT nombre, categoria, image FROM Productos",null);
         if(c.moveToFirst()){
             do{
                 String nombreProd= c.getString(c.getColumnIndex("nombre"));
                 String catProd=c.getString(c.getColumnIndex("categoria"));
+                int image = c.getInt(c.getColumnIndex("image"));
                 Category categoriaProducto=null;
                 for (Category feCategory: categorias) {
                     if(feCategory.getName().equals(catProd)){
                         categoriaProducto=feCategory;
                     }
                 }
-                Product product = new Product(nombreProd, 0);
+                Product product = new Product(nombreProd, image);
                 productos.add(product);
                 categoriaProducto.getProducts().add(product);
-                //productos.add(new Producto(nombreProd,categoriaProducto));
             }while (c.moveToNext());
         }
         c.close();
@@ -154,21 +148,19 @@ public class SQLiteHelper extends SQLiteOpenHelper {
         if(c.moveToFirst()){
             do{
                 String nombreLista=c.getString(0);
-                String nomLista=c.getString(1);
-                listas.add(new List(nombreLista,nomLista, new ArrayList<Product>()));
+                String fecha=c.getString(1);
+                listas.add(new List(nombreLista,fecha, new ArrayList<Product>()));
             }while (c.moveToNext());
         }
         c.close();
 
-        //productos lista
-
         for (List feLista:listas
         ) {
             String[] argumentosListas={String.valueOf(feLista.getName())};
-            c=db.rawQuery("SELECT id, producto, nombreLista, comprado FROM ItemsListaCompra where nombreLista=?",argumentosListas);
+            c=db.rawQuery("SELECT producto, nombreLista FROM ItemsListaCompra where nombreLista=?",argumentosListas);
             if (c.moveToFirst()){
                 do {
-                    String nombreProductoLista=c.getString(1);
+                    String nombreProductoLista=c.getString(0);
                     Product p= null;
                     for (Product feProd:productos) {
                         if(nombreProductoLista.equals(feProd.getName())){
@@ -190,114 +182,77 @@ public class SQLiteHelper extends SQLiteOpenHelper {
         return categorias;
     }
 
-    public ArrayList<Product> getProductos() {
-        return productos;
-    }
-
     public ArrayList<List> getListas() {
         return listas;
     }
 
-    /**
-     * Esta funcion comprueba que el proudcto esta en la lista. Si esta, añade uno a su valor
-     * si no lo encuentra crea un nuevo producto lista y lo anyade a las dos bases de datos
-     * @param producto
-     * @param listaCompra
-     */
-    /*public void addProductoLista(Producto producto, ListaCompra listaCompra){
+    public void addProductoLista(Product producto, List listaCompra){
         boolean encontrado=false;
-        ProductoLista productoLista=null;
 
-        int contador=0;
-        while (!encontrado && contador<listaCompra.getProductos().size()){
-
-            ProductoLista pl=listaCompra.getProductos().get(contador);
-            if(pl.getNombre().equals(producto.getNombre())){
-                productoLista=pl;
-                encontrado=true;
+        for (Product p: listaCompra.getProducts()){
+            if(p.getName().equals(producto.getName())){
+                encontrado = true;
             }
-            contador++;
         }
+
         SQLiteDatabase db=getWritableDatabase();
-        if(encontrado){
-            //update
-            modificarCantidadProductoDB(productoLista,1);
-        }else {
-            productoLista=new ProductoLista(producto);
+
+        if(!encontrado){
+            listaCompra.getProducts().add(producto);
 
             ContentValues nuevoItem=new ContentValues();
-            nuevoItem.put("id",productoLista.getId());
-            nuevoItem.put("producto",productoLista.getNombre());
-            nuevoItem.put("idLista",listaCompra.getId());
-            nuevoItem.put("cantidad",productoLista.getCantidad());
-            nuevoItem.put("comprado",productoLista.isComprado());
+            nuevoItem.put("producto",producto.getName());
+            nuevoItem.put("nombreLista",listaCompra.getName());
+            nuevoItem.put("comprado",false);
+
             db.insert("ItemsListaCompra",null,nuevoItem);
-            listaCompra.addProducto(productoLista);
             db.close();
         }
 
-
-    }*/
-
-    /**
-     * Esta funcion modifica actualiza la cantidad del producto en la lista especificada
-     * solo se usa para sumar 1 con lo que sera refactorizada en breves.
-     * @param productoLista
-     * @param sumaResta
-     */
-    /*public void modificarCantidadProductoDB(ProductoLista productoLista,int sumaResta){
-        productoLista.setCantidad(productoLista.getCantidad()+sumaResta);
-        SQLiteDatabase db=getWritableDatabase();
-        ContentValues values =new ContentValues();
-        String[] args={String.valueOf(productoLista.getId())};
-        values.put("cantidad",productoLista.getCantidad());
-        db.update("ItemsListaCompra",values,"id=?",args);
-        db.close();
-
-    }*/
-
-
-    /**
-     * Esta funcion asigna valor al booleano comprado de la base de datos.
-     * Actua sobre la tabla ItemsListaCompra
-     * @param productoLista
-     * @param marcar
-     */
-    /*public void marcarDesmarcarProducto(ProductoLista productoLista,boolean marcar){
-        productoLista.setComprado(marcar);
-        SQLiteDatabase db=getWritableDatabase();
-        ContentValues values =new ContentValues();
-        String[] args={String.valueOf(productoLista.getId())};
-        values.put("comprado",productoLista.isComprado());
-        db.update("ItemsListaCompra",values,"id=?",args);
-        db.close();
-
     }
 
-    public ArrayList<Producto> getProductosFromCategoria(Categoria categoria){
+    public void removeProducto(Product product, List listaCompra){
+        Product aux = null;
+        for (Product p: listaCompra.getProducts()){
+            if (p.getName().equals(product.getName())){
+                aux = p;
+            }
+        }
+        if (aux != null){
+            listaCompra.getProducts().remove(aux);
 
-        return null;
-    }*/
-    /*
-    public void removeProducto(ProductoAux p, ListaCompra listaCompra){
-        //caso update
-        if(p.getCantidad()>1){
-                p.setCantidad(p.getCantidad()-1);
             SQLiteDatabase db=getWritableDatabase();
-            ContentValues values =new ContentValues();
-            String[] args={String.valueOf(productoLista.getId())};
-            values.put("comprado",productoLista.isComprado());
-            db.update("ItemsListaCompra",values,"id=?",args);
+            String[] args={product.getName(), listaCompra.getName()};
+
+            db.delete("ItemsListaCompra", "producto=? & nombreLista=?", args);
             db.close();
-
-        //caso remove
-        } else if( p.getCantidad()==1){
-            p.setCantidad(0);
-
         }
+
 
     }
 
-     */
+    public void addLista(List listaCompra, ArrayList<Product> productsList){
+        boolean encontrado=false;
+
+        for (List l: listas){
+            if(l.getName().equals(listaCompra.getName())){
+                encontrado = true;
+            }
+        }
+
+        SQLiteDatabase db=getWritableDatabase();
+
+        if(!encontrado){
+            ContentValues nuevaLista=new ContentValues();
+            nuevaLista.put("nombre",listaCompra.getName());
+            nuevaLista.put("fecha",listaCompra.getDate());
+            db.insert("ListasCompra",null,nuevaLista);
+            listas.add(listaCompra);
+            db.close();
+            for (Product p: productsList){
+                addProductoLista(p, listaCompra);
+            }
+        }
+    }
 
 }

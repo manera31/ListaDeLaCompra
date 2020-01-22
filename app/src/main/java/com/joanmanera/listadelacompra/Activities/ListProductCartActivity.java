@@ -9,6 +9,7 @@ import com.joanmanera.listadelacompra.Fragments.FragmentProductList;
 import com.joanmanera.listadelacompra.Fragments.FragmrntProductListCart;
 import com.joanmanera.listadelacompra.Models.Product;
 import com.joanmanera.listadelacompra.R;
+import com.joanmanera.listadelacompra.SQLiteHelper;
 
 import java.util.ArrayList;
 
@@ -22,10 +23,11 @@ public class ListProductCartActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_product_list_cart);
         fragmrntProductListCart = (FragmrntProductListCart) getSupportFragmentManager().findFragmentById(R.id.fProductListCart);
-        products = (ArrayList<Product>)getIntent().getSerializableExtra(EXTRA_LIST_PRODUCT);
+        int listPos = getIntent().getIntExtra(EXTRA_LIST_PRODUCT, -1);
+        SQLiteHelper sqLiteHelper = SQLiteHelper.getInstance(this);
+        products = sqLiteHelper.getListas().get(listPos).getProducts();
         fragmrntProductListCart.setProductListListener(null);
         fragmrntProductListCart.show(products);
         setTitle("Productos de la lista");
-
     }
 }

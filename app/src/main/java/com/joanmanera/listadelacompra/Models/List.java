@@ -9,10 +9,10 @@ public class List implements Serializable {
     private String date;
     private ArrayList<Product> products;
 
-    public List(String name, ArrayList<Product> products) {
+    public List(String name) {
         this.name = name;
         this.date = new GregorianCalendar().getTime().toString();
-        this.products = products;
+        this.products = new ArrayList<>();
     }
 
     public List(String name, String date, ArrayList<Product> products) {

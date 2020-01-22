@@ -7,7 +7,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.EditText;
-import android.widget.TextView;
+import android.widget.LinearLayout;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -15,12 +15,8 @@ import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.joanmanera.listadelacompra.Adapters.AdapterCategoryList;
 import com.joanmanera.listadelacompra.Adapters.AdapterProductList;
-import com.joanmanera.listadelacompra.Interfaces.ICategoryListListener;
 import com.joanmanera.listadelacompra.Interfaces.IProductListListener;
-import com.joanmanera.listadelacompra.Models.Category;
-import com.joanmanera.listadelacompra.Models.List;
 import com.joanmanera.listadelacompra.Models.Product;
 import com.joanmanera.listadelacompra.R;
 
@@ -36,7 +32,7 @@ public class FragmentProductList extends Fragment {
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        View view = inflater.inflate(R.layout.fragment_list, container, false);
+        View view = inflater.inflate(R.layout.fragment_product_category_list, container, false);
 
         etFilter = view.findViewById(R.id.etFilter);
         etFilter.addTextChangedListener(new TextWatcher() {
@@ -58,6 +54,8 @@ public class FragmentProductList extends Fragment {
 
         rvList = view.findViewById(R.id.rvList);
 
+        LinearLayout llAddList = view.findViewById(R.id.llAddList);
+        llAddList.setVisibility(View.INVISIBLE);
 
         return view;
     }

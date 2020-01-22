@@ -22,6 +22,7 @@ import java.util.ArrayList;
 public class ListCategoryActivity extends AppCompatActivity implements ICategoryListListener {
     public static final String EXTRA_LIST_CATEGORY = "com.joanmanera.listadelacompra.CATEGORIES";
     private ArrayList<Category> categories;
+    private Intent intentProductList;
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
@@ -37,9 +38,8 @@ public class ListCategoryActivity extends AppCompatActivity implements ICategory
 
     @Override
     public void onCategoryListSelected(int category) {
-        Intent result = new Intent();
-        result.putExtra("category", category);
-        setResult(Activity.RESULT_OK, result);
-        finish();
+        intentProductList = new Intent(this, ListProductActivity.class);
+        intentProductList.putExtra(ListProductActivity.EXTRA_LIST_PRODUCT, categories.get(category).getProducts());
+        startActivity(intentProductList);
     }
 }

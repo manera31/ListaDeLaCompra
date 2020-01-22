@@ -28,5 +28,30 @@
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/rvList"
         android:layout_width="match_parent"
-        android:layout_height="match_parent" />
+        android:layout_height="wrap_content"
+        android:layout_marginTop="20dp"
+        android:layout_marginBottom="20dp" />
+
+    <LinearLayout
+        android:id="@+id/llAddList"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal">
+
+        <EditText
+            android:id="@+id/etNameList"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:ems="10"
+            android:hint="Nombre nueva lista"
+            android:inputType="textPersonName" />
+
+        <Button
+            android:id="@+id/bAddList"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:text="Añadir Lista" />
+    </LinearLayout>
 </LinearLayout>
