@@ -30,14 +30,17 @@ public class MainActivity extends AppCompatActivity implements IListListener, IC
         sqLiteHelper = SQLiteHelper.getInstance(this);
         if (sqLiteHelper.cargarDatos()){
             Toast.makeText(this, "Datos cargados", Toast.LENGTH_SHORT).show();
+
+            FragmentList fragmentList = new FragmentList(this);
+            getSupportFragmentManager().beginTransaction().replace(R.id.contenedor, fragmentList).addToBackStack(null).commit();
+            setTitle("Listas");
+
         } else {
             Toast.makeText(this, "Datos no cargados", Toast.LENGTH_SHORT).show();
+            finish();
         }
 
-        //TODO llamar fragment
-        FragmentList fragmentList = new FragmentList(this);
-        getSupportFragmentManager().beginTransaction().replace(R.id.contenedor, fragmentList).addToBackStack(null).commit();
-        setTitle("Listas");
+
 
     }
 
