@@ -48,7 +48,7 @@ public class SQLiteHelper extends SQLiteOpenHelper {
             "INSERT INTO Productos (nombre, categoria, image) VALUES ('Naranjas', 'Frutas y verduras', "+  R.drawable.naranja + ");",
             "INSERT INTO Productos (nombre, categoria, image) VALUES ('Pasta de Dientes', 'Otros', "+  R.drawable.pasta_dientes + ");"
     };
-    private static final String INSERT_LISTAS ="INSERT INTO ListasCompra (nombre, fecha) VALUES ('Mi Lista', '22/01/2020 00:32');";
+    private static final String INSERT_LISTAS ="INSERT INTO ListasCompra (nombre, fecha) VALUES ('Mi Lista', 'Wed Jan 22 00:32:49 GTM+01:00 2020');";
 
     private static final String[] INSERT_ITEM_LISTAS={
             "INSERT INTO ItemsListaCompra (producto, nombreLista, comprado) VALUES ('Tomates', 'Mi Lista', 'true');" ,

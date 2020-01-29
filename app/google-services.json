@@ -1,0 +1,48 @@
+{
+  "project_info": {
+    "project_number": "333498832591",
+    "firebase_url": "https://holamundo-e8e3c.firebaseio.com",
+    "project_id": "holamundo-e8e3c",
+    "storage_bucket": "holamundo-e8e3c.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:333498832591:android:b46d4233ae9f1d61cd89ba",
+        "android_client_info": {
+          "package_name": "com.joanmanera.listadelacompra"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "333498832591-68t0vi735ep6tsb0d538mbtmpt493ppb.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.joanmanera.listadelacompra",
+            "certificate_hash": "8f981df19389a3aca8fede0cd01e7ec047ed4feb"
+          }
+        },
+        {
+          "client_id": "333498832591-k73fjlg68ot3knt66n16tm0dd2tnekpp.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBwx03EZS-CHIfDSvLt9NjU5VZ4gMBY7pc"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "333498832591-k73fjlg68ot3knt66n16tm0dd2tnekpp.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
