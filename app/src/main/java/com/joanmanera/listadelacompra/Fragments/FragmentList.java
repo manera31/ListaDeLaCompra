@@ -26,13 +26,11 @@ import com.joanmanera.listadelacompra.SQLiteHelper;
 import java.util.ArrayList;
 
 public class FragmentList extends Fragment {
-    private ArrayList<List> lists;
     private AdapterList adapterList;
     private RecyclerView rvList;
     private SQLiteHelper sqLiteHelper;
     private EditText etFilter, etNameList;
     private Button bAddList;
-    private Intent getIntentProductListCart;
     private IListListener listener;
 
     public FragmentList (IListListener listListener){
@@ -45,7 +43,6 @@ public class FragmentList extends Fragment {
         View view = inflater.inflate(R.layout.fragment_list, container, false);
 
         sqLiteHelper = SQLiteHelper.getInstance(getActivity());
-        lists = sqLiteHelper.getListas();
 
         rvList = view.findViewById(R.id.rvList);
         etFilter = view.findViewById(R.id.etFilter);
@@ -79,17 +76,16 @@ public class FragmentList extends Fragment {
             }
         });
 
-        adapterList = new AdapterList(lists, listener);
+        adapterList = new AdapterList(sqLiteHelper.getListas(), listener);
         rvList.setAdapter(adapterList);
         rvList.setLayoutManager(new LinearLayoutManager(getActivity(),LinearLayoutManager.VERTICAL,false));
-        adapterList.setLists(lists);
 
 
         return view;
     }
     private void filter(String s){
         ArrayList<List> filteredLists = new ArrayList<>();
-        for (List l: lists){
+        for (List l: sqLiteHelper.getListas()){
             if(l.getName().toLowerCase().contains(s.toLowerCase())){
                 filteredLists.add(l);
             }

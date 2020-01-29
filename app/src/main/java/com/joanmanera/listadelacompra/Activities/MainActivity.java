@@ -21,6 +21,7 @@ import com.joanmanera.listadelacompra.SQLiteHelper;
 public class MainActivity extends AppCompatActivity implements IListListener, ICategoryListListener, IProductListListener, View.OnClickListener {
     private SQLiteHelper sqLiteHelper;
     private FragmentProductListCart fragmentProductListCart;
+    private int currentList;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -46,7 +47,8 @@ public class MainActivity extends AppCompatActivity implements IListListener, IC
 
     @Override
     public void onListSelected(int list) {
-        fragmentProductListCart = new FragmentProductListCart(this, this, sqLiteHelper.getListas().get(list).getProducts());
+        currentList = list;
+        fragmentProductListCart = new FragmentProductListCart(this, this, sqLiteHelper.getListas().get(list).getProducts(), currentList);
         getSupportFragmentManager().beginTransaction().replace(R.id.contenedor, fragmentProductListCart).addToBackStack(null).commit();
         setTitle("Productos de la lista");
     }
@@ -55,7 +57,7 @@ public class MainActivity extends AppCompatActivity implements IListListener, IC
     @Override
     public void onClick(View v) {
         if (v.getId() == R.id.bAddProducts){
-            FragmentCategoryList fragmentCategoryList = new FragmentCategoryList(this, sqLiteHelper.getCategorias());
+            FragmentCategoryList fragmentCategoryList = new FragmentCategoryList(this);
             getSupportFragmentManager().beginTransaction().replace(R.id.contenedor, fragmentCategoryList).addToBackStack(null).commit();
             setTitle("Categorías");
         }
@@ -75,16 +77,16 @@ public class MainActivity extends AppCompatActivity implements IListListener, IC
         sqLiteHelper = SQLiteHelper.getInstance(this);
 
         boolean encontrado = false;
-        for (Product p: sqLiteHelper.getListas().get(sqLiteHelper.getCurrentList()).getProducts()){
+        for (Product p: sqLiteHelper.getListas().get(currentList).getProducts()){
             if (p.getName().equals(productSelected.getName())){
                 encontrado = true;
             }
         }
 
         if (!encontrado){
-            sqLiteHelper.addProductoLista(productSelected, sqLiteHelper.getListas().get(sqLiteHelper.getCurrentList()));
+            sqLiteHelper.addProductoLista(productSelected, sqLiteHelper.getListas().get(currentList));
         } else {
-            sqLiteHelper.removeProducto(productSelected, sqLiteHelper.getListas().get(sqLiteHelper.getCurrentList()));
+            sqLiteHelper.removeProducto(productSelected, sqLiteHelper.getListas().get(currentList));
         }
 
         fragmentProductListCart.refresh();

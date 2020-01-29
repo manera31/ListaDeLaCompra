@@ -18,27 +18,29 @@ import com.joanmanera.listadelacompra.Adapters.AdapterCategoryList;
 import com.joanmanera.listadelacompra.Interfaces.ICategoryListListener;
 import com.joanmanera.listadelacompra.Models.Category;
 import com.joanmanera.listadelacompra.R;
+import com.joanmanera.listadelacompra.SQLiteHelper;
 
 import java.util.ArrayList;
 
 public class FragmentCategoryList extends Fragment {
 
     public static final int SPAN_COUNT = 3;
-    private ArrayList<Category> categories;
     private AdapterCategoryList adapterCategoryList;
     private RecyclerView rvList;
     private EditText etFilter;
     private ICategoryListListener listener;
+    private SQLiteHelper sqLiteHelper;
 
-    public FragmentCategoryList(ICategoryListListener listener, ArrayList<Category> categories){
+    public FragmentCategoryList(ICategoryListListener listener){
         this.listener = listener;
-        this.categories = categories;
     }
 
     @Nullable
     @Override
     public View onCreateView( LayoutInflater inflater, @Nullable ViewGroup container, Bundle savedInstanceState) {
         final View view = inflater.inflate(R.layout.fragment_product_category, container, false);
+
+        sqLiteHelper = SQLiteHelper.getInstance(getActivity());
 
         etFilter = view.findViewById(R.id.etFilter);
         etFilter.addTextChangedListener(new TextWatcher() {
@@ -60,7 +62,7 @@ public class FragmentCategoryList extends Fragment {
 
         rvList = view.findViewById(R.id.rvList);
 
-        adapterCategoryList = new AdapterCategoryList(categories, listener);
+        adapterCategoryList = new AdapterCategoryList(sqLiteHelper.getCategorias(), listener);
         rvList.setAdapter(adapterCategoryList);
         rvList.setLayoutManager(new GridLayoutManager(getActivity(), SPAN_COUNT));
 
@@ -73,14 +75,9 @@ public class FragmentCategoryList extends Fragment {
 
     }
 
-    public void show(ArrayList<Category> categories){
-        this.categories = categories;
-        adapterCategoryList.setCategories(categories);
-    }
-
     private void filter(String s){
         ArrayList<Category> filteredCategories = new ArrayList<>();
-        for (Category c: categories){
+        for (Category c: sqLiteHelper.getCategorias()){
             if(c.getName().toLowerCase().contains(s.toLowerCase())){
                 filteredCategories.add(c);
             }

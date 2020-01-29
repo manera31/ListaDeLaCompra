@@ -62,15 +62,6 @@ public class SQLiteHelper extends SQLiteOpenHelper {
     private ArrayList<Category> categorias;
     private ArrayList<Product> productos;
     private ArrayList<List> listas;
-    private int currentList;
-
-    public int getCurrentList() {
-        return currentList;
-    }
-
-    public void setCurrentList(int currentList) {
-        this.currentList = currentList;
-    }
 
     @Override
     public void onCreate(SQLiteDatabase db) {

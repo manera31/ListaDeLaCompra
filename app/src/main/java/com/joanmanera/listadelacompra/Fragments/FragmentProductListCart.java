@@ -28,20 +28,20 @@ import java.util.ArrayList;
 public class FragmentProductListCart extends Fragment {
     public static final int SPAN_COUNT = 3;
     private ArrayList<Product> products;
-    private ArrayList<Category> categories;
     private AdapterProductList adapterProductList;
     private RecyclerView rvList;
     private EditText etFilter;
     private Button bAddProducts;
-    private Intent intentCategoryList;
     private SQLiteHelper sqLiteHelper;
     private IProductListListener listener;
     private View.OnClickListener buttonAddProductListener;
+    private int currentList;
 
-    public FragmentProductListCart(IProductListListener listener, View.OnClickListener buttonAddProductListener, ArrayList<Product> products){
+    public FragmentProductListCart(IProductListListener listener, View.OnClickListener buttonAddProductListener, ArrayList<Product> products, int currentList){
         this.listener = listener;
         this.buttonAddProductListener = buttonAddProductListener;
         this.products = products;
+        this.currentList = currentList;
     }
 
     @Nullable
@@ -50,7 +50,6 @@ public class FragmentProductListCart extends Fragment {
         View view = inflater.inflate(R.layout.fragment_product_list_cart, container, false);
 
         sqLiteHelper = SQLiteHelper.getInstance(getActivity());
-        categories = sqLiteHelper.getCategorias();
         etFilter = view.findViewById(R.id.etFilter);
         etFilter.addTextChangedListener(new TextWatcher() {
             @Override
@@ -83,7 +82,7 @@ public class FragmentProductListCart extends Fragment {
     @Override
     public void onResume() {
         super.onResume();
-        adapterProductList.setProducts(sqLiteHelper.getListas().get(sqLiteHelper.getCurrentList()).getProducts());
+        adapterProductList.setProducts(sqLiteHelper.getListas().get(currentList).getProducts());
     }
 
     public void refresh(){
