@@ -28,11 +28,17 @@ public class FragmentCategoryList extends Fragment {
     private AdapterCategoryList adapterCategoryList;
     private RecyclerView rvList;
     private EditText etFilter;
+    private ICategoryListListener listener;
+
+    public FragmentCategoryList(ICategoryListListener listener, ArrayList<Category> categories){
+        this.listener = listener;
+        this.categories = categories;
+    }
 
     @Nullable
     @Override
     public View onCreateView( LayoutInflater inflater, @Nullable ViewGroup container, Bundle savedInstanceState) {
-        final View view = inflater.inflate(R.layout.fragment_product_category_list, container, false);
+        final View view = inflater.inflate(R.layout.fragment_product_category, container, false);
 
         etFilter = view.findViewById(R.id.etFilter);
         etFilter.addTextChangedListener(new TextWatcher() {
@@ -54,9 +60,9 @@ public class FragmentCategoryList extends Fragment {
 
         rvList = view.findViewById(R.id.rvList);
 
-        LinearLayout llAddList = view.findViewById(R.id.llAddList);
-        llAddList.setVisibility(View.INVISIBLE);
-
+        adapterCategoryList = new AdapterCategoryList(categories, listener);
+        rvList.setAdapter(adapterCategoryList);
+        rvList.setLayoutManager(new GridLayoutManager(getActivity(), SPAN_COUNT));
 
         return view;
     }
@@ -82,11 +88,5 @@ public class FragmentCategoryList extends Fragment {
 
         adapterCategoryList.setCategories(filteredCategories);
 
-    }
-
-    public void setCategoryListListener(ICategoryListListener listener){
-        adapterCategoryList = new AdapterCategoryList(categories, listener);
-        rvList.setAdapter(adapterCategoryList);
-        rvList.setLayoutManager(new GridLayoutManager(getActivity(), SPAN_COUNT));
     }
 }

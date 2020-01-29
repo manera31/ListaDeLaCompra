@@ -8,15 +8,10 @@
     android:orientation="vertical"
     tools:context=".Activities.MainActivity">
 
-    <Button
-        android:id="@+id/button"
+    <RelativeLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:text="Button" />
+        android:layout_height="match_parent"
+        android:id="@+id/contenedor">
 
-    <Button
-        android:id="@+id/button2"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:text="ver lista" />
+    </RelativeLayout>
 </LinearLayout>

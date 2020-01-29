@@ -1,6 +1,5 @@
 package com.joanmanera.listadelacompra.Fragments;
 
-import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
 import android.text.Editable;
@@ -10,7 +9,6 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.EditText;
-import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -18,20 +16,16 @@ import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.joanmanera.listadelacompra.Activities.ListCategoryActivity;
-import com.joanmanera.listadelacompra.Activities.ListProductActivity;
-import com.joanmanera.listadelacompra.Activities.ListProductCartActivity;
 import com.joanmanera.listadelacompra.Adapters.AdapterProductList;
 import com.joanmanera.listadelacompra.Interfaces.IProductListListener;
 import com.joanmanera.listadelacompra.Models.Category;
-import com.joanmanera.listadelacompra.Models.List;
 import com.joanmanera.listadelacompra.Models.Product;
 import com.joanmanera.listadelacompra.R;
 import com.joanmanera.listadelacompra.SQLiteHelper;
 
 import java.util.ArrayList;
 
-public class FragmrntProductListCart extends Fragment {
+public class FragmentProductListCart extends Fragment {
     public static final int SPAN_COUNT = 3;
     private ArrayList<Product> products;
     private ArrayList<Category> categories;
@@ -41,6 +35,14 @@ public class FragmrntProductListCart extends Fragment {
     private Button bAddProducts;
     private Intent intentCategoryList;
     private SQLiteHelper sqLiteHelper;
+    private IProductListListener listener;
+    private View.OnClickListener buttonAddProductListener;
+
+    public FragmentProductListCart(IProductListListener listener, View.OnClickListener buttonAddProductListener, ArrayList<Product> products){
+        this.listener = listener;
+        this.buttonAddProductListener = buttonAddProductListener;
+        this.products = products;
+    }
 
     @Nullable
     @Override
@@ -69,14 +71,12 @@ public class FragmrntProductListCart extends Fragment {
         rvList = view.findViewById(R.id.rvList);
         bAddProducts = view.findViewById(R.id.bAddProducts);
 
-        bAddProducts.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                intentCategoryList = new Intent(getActivity(), ListCategoryActivity.class);
-                intentCategoryList.putExtra(ListCategoryActivity.EXTRA_LIST_CATEGORY, categories);
-                startActivity(intentCategoryList);
-            }
-        });
+        bAddProducts.setOnClickListener(buttonAddProductListener);
+
+        adapterProductList = new AdapterProductList(products, listener, getActivity(), R.layout.item_product_list);
+        rvList.setAdapter(adapterProductList);
+        rvList.setLayoutManager(new GridLayoutManager(getActivity(), SPAN_COUNT));
+
         return view;
     }
 
@@ -86,14 +86,8 @@ public class FragmrntProductListCart extends Fragment {
         adapterProductList.setProducts(sqLiteHelper.getListas().get(sqLiteHelper.getCurrentList()).getProducts());
     }
 
-    @Override
-    public void onActivityCreated(@Nullable Bundle savedInstanceState) {
-        super.onActivityCreated(savedInstanceState);
-    }
-
-    public void show(ArrayList<Product> products){
-        this.products = products;
-        adapterProductList.setProducts(products);
+    public void refresh(){
+        adapterProductList.notifyDataSetChanged();
     }
 
     private void filter(String s){
@@ -106,11 +100,5 @@ public class FragmrntProductListCart extends Fragment {
 
         adapterProductList.setProducts(filteredProducts);
 
-    }
-
-    public void setProductListListener(IProductListListener listener){
-        adapterProductList = new AdapterProductList(products, listener, getActivity(), R.layout.item_product_list);
-        rvList.setAdapter(adapterProductList);
-        rvList.setLayoutManager(new GridLayoutManager(getActivity(), SPAN_COUNT));
     }
 }

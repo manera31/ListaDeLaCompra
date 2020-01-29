@@ -91,10 +91,10 @@ public class SQLiteHelper extends SQLiteOpenHelper {
 
         db.execSQL(INSERT_LISTAS);
 
-        for (String itemList: INSERT_ITEM_LISTAS
+        /*for (String itemList: INSERT_ITEM_LISTAS
         ) {
             db.execSQL(itemList);
-        }
+        }*/
 
     }
 
@@ -224,10 +224,9 @@ public class SQLiteHelper extends SQLiteOpenHelper {
             SQLiteDatabase db=getWritableDatabase();
             String[] args={product.getName(), listaCompra.getName()};
 
-            db.delete("ItemsListaCompra", "producto=? & nombreLista=?", args);
+            db.delete("ItemsListaCompra", "producto=? AND nombreLista=?", args);
             db.close();
         }
-
 
     }
 

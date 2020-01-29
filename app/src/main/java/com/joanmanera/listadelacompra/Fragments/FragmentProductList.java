@@ -28,11 +28,17 @@ public class FragmentProductList extends Fragment {
     private AdapterProductList adapterProductList;
     private RecyclerView rvList;
     private EditText etFilter;
+    private IProductListListener listener;
+
+    public FragmentProductList(IProductListListener listener, ArrayList<Product> products){
+        this.listener = listener;
+        this.products = products;
+    }
 
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        View view = inflater.inflate(R.layout.fragment_product_category_list, container, false);
+        View view = inflater.inflate(R.layout.fragment_product_category, container, false);
 
         etFilter = view.findViewById(R.id.etFilter);
         etFilter.addTextChangedListener(new TextWatcher() {
@@ -54,8 +60,9 @@ public class FragmentProductList extends Fragment {
 
         rvList = view.findViewById(R.id.rvList);
 
-        LinearLayout llAddList = view.findViewById(R.id.llAddList);
-        llAddList.setVisibility(View.INVISIBLE);
+        adapterProductList = new AdapterProductList(products, listener, getActivity(), R.layout.item_product_list);
+        rvList.setAdapter(adapterProductList);
+        rvList.setLayoutManager(new GridLayoutManager(getActivity(), SPAN_COUNT));
 
         return view;
     }
@@ -63,11 +70,6 @@ public class FragmentProductList extends Fragment {
     @Override
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
-    }
-
-    public void show(ArrayList<Product> products){
-        this.products = products;
-        adapterProductList.setProducts(products);
     }
 
     private void filter(String s){
@@ -80,11 +82,5 @@ public class FragmentProductList extends Fragment {
 
         adapterProductList.setProducts(filteredProducts);
 
-    }
-
-    public void setProductListListener(IProductListListener listener){
-        adapterProductList = new AdapterProductList(products, listener, getActivity(), R.layout.item_product_list);
-        rvList.setAdapter(adapterProductList);
-        rvList.setLayoutManager(new GridLayoutManager(getActivity(), SPAN_COUNT));
     }
 }

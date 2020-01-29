@@ -1,43 +1,31 @@
 package com.joanmanera.listadelacompra.Activities;
 
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.recyclerview.widget.LinearLayoutManager;
-import androidx.recyclerview.widget.RecyclerView;
 
 import android.content.Intent;
 import android.os.Bundle;
-import android.text.Editable;
-import android.text.TextWatcher;
 import android.view.View;
-import android.widget.Button;
-import android.widget.EditText;
-import android.widget.LinearLayout;
 import android.widget.Toast;
 
-import com.joanmanera.listadelacompra.Adapters.AdapterList;
+import com.joanmanera.listadelacompra.Fragments.FragmentCategoryList;
+import com.joanmanera.listadelacompra.Fragments.FragmentList;
+import com.joanmanera.listadelacompra.Fragments.FragmentProductList;
+import com.joanmanera.listadelacompra.Fragments.FragmentProductListCart;
+import com.joanmanera.listadelacompra.Interfaces.ICategoryListListener;
 import com.joanmanera.listadelacompra.Interfaces.IListListener;
-import com.joanmanera.listadelacompra.Models.List;
+import com.joanmanera.listadelacompra.Interfaces.IProductListListener;
 import com.joanmanera.listadelacompra.Models.Product;
 import com.joanmanera.listadelacompra.R;
 import com.joanmanera.listadelacompra.SQLiteHelper;
 
-import java.util.ArrayList;
-
-public class MainActivity extends AppCompatActivity implements IListListener {
-    private ArrayList<List> lists;
-
-    private Intent getIntentProductListCart;
-
-    private AdapterList adapterList;
-    private RecyclerView rvList;
-    private EditText etFilter, etNameList;
+public class MainActivity extends AppCompatActivity implements IListListener, ICategoryListListener, IProductListListener, View.OnClickListener {
     private SQLiteHelper sqLiteHelper;
-    private Button bAddList;
+    private FragmentProductListCart fragmentProductListCart;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.fragment_product_category_list);
+        setContentView(R.layout.activity_main);
 
         sqLiteHelper = SQLiteHelper.getInstance(this);
         if (sqLiteHelper.cargarDatos()){
@@ -46,70 +34,56 @@ public class MainActivity extends AppCompatActivity implements IListListener {
             Toast.makeText(this, "Datos no cargados", Toast.LENGTH_SHORT).show();
         }
 
-        lists = sqLiteHelper.getListas();
-
-        rvList = findViewById(R.id.rvList);
-        etFilter = findViewById(R.id.etFilter);
-        etFilter.addTextChangedListener(new TextWatcher() {
-            @Override
-            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
-
-            }
-
-            @Override
-            public void onTextChanged(CharSequence s, int start, int before, int count) {
-
-            }
-
-            @Override
-            public void afterTextChanged(Editable s) {
-                filter(s.toString());
-            }
-        });
-
-        etNameList = findViewById(R.id.etNameList);
-        bAddList = findViewById(R.id.bAddList);
-        bAddList.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                if(!etNameList.getText().toString().equals("")){
-                    sqLiteHelper.addLista(new List(etNameList.getText().toString()), new ArrayList<Product>());
-                    adapterList.setLists(sqLiteHelper.getListas());
-                    etNameList.setText("");
-                }
-            }
-        });
-
-        adapterList = new AdapterList(lists, this);
-        rvList.setAdapter(adapterList);
-        rvList.setLayoutManager(new LinearLayoutManager(this,LinearLayoutManager.VERTICAL,false));
-        adapterList.setLists(lists);
+        //TODO llamar fragment
+        FragmentList fragmentList = new FragmentList(this);
+        getSupportFragmentManager().beginTransaction().replace(R.id.contenedor, fragmentList).addToBackStack(null).commit();
         setTitle("Listas");
 
     }
 
     @Override
-    protected void onResume() {
-        super.onResume();
-        adapterList.notifyDataSetChanged();
+    public void onListSelected(int list) {
+        fragmentProductListCart = new FragmentProductListCart(this, this, sqLiteHelper.getListas().get(list).getProducts());
+        getSupportFragmentManager().beginTransaction().replace(R.id.contenedor, fragmentProductListCart).addToBackStack(null).commit();
+        setTitle("Productos de la lista");
     }
 
-    private void filter(String s){
-        ArrayList<List> filteredLists = new ArrayList<>();
-        for (List l: lists){
-            if(l.getName().toLowerCase().contains(s.toLowerCase())){
-                filteredLists.add(l);
-            }
-        }
 
-        adapterList.setLists(filteredLists);
+    @Override
+    public void onClick(View v) {
+        if (v.getId() == R.id.bAddProducts){
+            FragmentCategoryList fragmentCategoryList = new FragmentCategoryList(this, sqLiteHelper.getCategorias());
+            getSupportFragmentManager().beginTransaction().replace(R.id.contenedor, fragmentCategoryList).addToBackStack(null).commit();
+            setTitle("Categorías");
+        }
     }
 
     @Override
-    public void onListSelected(int list) {
-        sqLiteHelper.setCurrentList(list);
-        getIntentProductListCart = new Intent(this, ListProductCartActivity.class);
-        getIntentProductListCart.putExtra(ListProductCartActivity.EXTRA_LIST_PRODUCT, list);
-        startActivity(getIntentProductListCart);
+    public void onCategoryListSelected(int category) {
+        FragmentProductList fragmentProductList = new FragmentProductList(this, sqLiteHelper.getCategorias().get(category).getProducts());
+        getSupportFragmentManager().beginTransaction().replace(R.id.contenedor, fragmentProductList).addToBackStack(null).commit();
+        setTitle("Productos");
+    }
+
+    @Override
+    public void onProductListSelected(Product productSelected) {
+        Toast.makeText(this, productSelected.getName(), Toast.LENGTH_SHORT).show();
+
+        sqLiteHelper = SQLiteHelper.getInstance(this);
+
+        boolean encontrado = false;
+        for (Product p: sqLiteHelper.getListas().get(sqLiteHelper.getCurrentList()).getProducts()){
+            if (p.getName().equals(productSelected.getName())){
+                encontrado = true;
+            }
+        }
+
+        if (!encontrado){
+            sqLiteHelper.addProductoLista(productSelected, sqLiteHelper.getListas().get(sqLiteHelper.getCurrentList()));
+        } else {
+            sqLiteHelper.removeProducto(productSelected, sqLiteHelper.getListas().get(sqLiteHelper.getCurrentList()));
+        }
+
+        fragmentProductListCart.refresh();
     }
 }
